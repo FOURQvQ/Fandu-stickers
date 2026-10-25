@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>梵度长屋</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap">
+<link rel="stylesheet" href="css/style.css">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+</head>
+<body>
+<div class="app">
+  <header class="bar">
+    <div class="brand"><h1>梵度长屋</h1><small>梵度矿坑 · 冒险者长屋</small></div>
+    <div class="prog" aria-live="polite">已贴 <b id="progN">0</b>/<span id="progT">89</span> <span id="progFree"></span><div class="meter"><i id="meter"></i></div></div>
+    <div class="actions">
+      <button class="btn" id="labelBtn" type="button" aria-pressed="false" title="测试用：在还没贴的位置显示编号">编号</button>
+      <button class="btn" id="homeBtn" type="button">复位视角</button>
+      <button class="btn" id="mapBtn" type="button" aria-pressed="false">俯视地图</button>
+      <button class="btn" id="exportBtn" type="button" hidden>导出地图 PNG</button>
+      <button class="btn" id="resetBtn" type="button">清空重来</button>
+      <button class="btn" id="tuneBtn" type="button" aria-pressed="false">手感调节</button>
+    </div>
+  </header>
+  <main class="main">
+    <aside class="tray" aria-label="贴纸页">
+      <div class="tray-head"><h2>贴纸页</h2><span>按住拖进长屋</span></div>
+      <div class="tabs" id="tabs" role="tablist" aria-label="按房间筛选"></div>
+      <div class="cards" id="cards"></div>
+      <p class="tray-foot">靠近该放的位置会被吸过去，松手就贴上。贴好的东西可以再拖起来，拖回这里就撕下来了；家具上叠放的东西会一起撕下。</p>
+    </aside>
+    <section class="stage" id="stage">
+      <canvas id="cv"></canvas>
+      <div class="hint" id="hint">左键拖空白处：转视角 · 右键拖动：平移 · 滚轮：缩放 · 自由模式下拖拽时按 R 旋转</div>
+      <div class="maptag" id="maptag" hidden>跑团地图 · 1 格 = 5 尺 = 1.5 m</div>
+      <button class="preview" id="preview" type="button" hidden aria-label="成品图，点击放大"><img id="previewImg" alt="长屋全部摆好的样子"><span>成品图 · 点击放大</span></button>
+      <div class="preview-big" id="previewBig" hidden><img alt="长屋全部摆好的样子"><p>对照成品图，想想东西该放哪 · 点任意处关闭</p></div>
+      <div class="toast" id="toast" hidden></div>
+      <div class="panel" id="panel" hidden>
+        <div class="panel-head"><h3>手感调节</h3><button class="x" id="closePanel" type="button">收起</button></div>
+        <div class="row">
+          <label>摆放模式</label>
+          <div class="seg">
+            <label><input type="radio" name="mode" value="strict" data-k="mode"><span>严格吸附</span></label>
+            <label><input type="radio" name="mode" value="free" data-k="mode"><span>自由摆放</span></label>
+          </div>
+          <small>严格：只能贴到该放的位置。自由：哪里都能放，靠近正确位置仍会吸附。</small>
+        </div>
+        <div class="row">
+          <label for="p-guide">定位线</label>
+          <select id="p-guide" data-k="guide">
+            <option value="none">靠近才显形（默认）</option>
+            <option value="outline">拖拽时一直显示地面轮廓</option>
+            <option value="ghost">拖拽时一直显示立体虚影</option>
+            <option value="all">拖拽时虚影和轮廓都显示</option>
+          </select>
+          <small>只提示正在拖的这一件。吸住时变成橙色。</small>
+        </div>
+        <div class="sec">吸附</div>
+        <div class="row">
+          <label for="p-radius">吸附半径 <output id="o-radius"></output></label>
+          <input type="range" id="p-radius" data-k="radius" min="0.3" max="3" step="0.1">
+          <small>离目标多近开始被吸住。1 格 = 5 尺 = 1.5 m。叠放的小东西最多 0.6 m。</small>
+        </div>
+        <div class="row">
+          <label for="p-pull">磁吸强度 <output id="o-pull"></output></label>
+          <input type="range" id="p-pull" data-k="pull" min="0" max="1" step="0.05">
+          <small>进入范围后被拽向目标的力度。100% 时几乎直接锁定。</small>
+        </div>
+        <div class="sec">拿起与落下</div>
+        <div class="row">
+          <label for="p-lift">悬浮高度 <output id="o-lift"></output></label>
+          <input type="range" id="p-lift" data-k="lift" min="0" max="2" step="0.1">
+        </div>
+        <div class="row">
+          <label for="p-drop">落下时长 <output id="o-drop"></output></label>
+          <input type="range" id="p-drop" data-k="drop" min="40" max="500" step="10">
+          <small>越短越像"啪"地拍下去，越长越像轻轻放下。</small>
+        </div>
+        <div class="row">
+          <label for="p-squash">回弹幅度 <output id="o-squash"></output></label>
+          <input type="range" id="p-squash" data-k="squash" min="0" max="0.5" step="0.02">
+          <small>落地瞬间被压扁再弹回的程度。</small>
+        </div>
+        <div class="sec">反馈</div>
+        <div class="checks">
+          <label><input type="checkbox" data-k="sound">音效</label>
+          <label><input type="checkbox" data-k="shake">震屏</label>
+          <label><input type="checkbox" data-k="dust">尘土</label>
+        </div>
+        <button class="btn" id="defaults" type="button">恢复默认手感</button>
+      </div>
+      <div class="loading" id="loading"><div class="ld-box"><b id="ldText">正在加载</b><div class="meter"><i id="ldBar"></i></div></div></div>
+    </section>
+  </main>
+</div>
+<div class="fly" id="fly" hidden><img id="flyImg" alt=""></div>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,296 @@
+<title>长屋布局稿</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=ZCOOL+XiaoWei&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a drafting sheet — the floor plan is the hero, the placement schedule and house kit follow below it */
+:root{
+  --bg:#e8e4da; --sheet:#f4f1e9; --ink:#2b2620; --muted:#6f6556; --line:#cfc6b4; --wall:#3b3027;
+  --big:#2e6a68; --mid:#b07f2a; --small:#9b4636; --hl:#1f7fbf; --room:#e9e2d2;
+  --f-display:"ZCOOL XiaoWei","Songti SC","STSong",serif;
+  --f-body:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#171612;--sheet:#211f1a;--ink:#ece5d6;--muted:#a69b88;--line:#3b362d;--wall:#d9cdb6;--big:#62b3ad;--mid:#e0ad52;--small:#e07a66;--hl:#5cb4f0;--room:#2a2721;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#171612;--sheet:#211f1a;--ink:#ece5d6;--muted:#a69b88;--line:#3b362d;--wall:#d9cdb6;--big:#62b3ad;--mid:#e0ad52;--small:#e07a66;--hl:#5cb4f0;--room:#2a2721;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.6}
+.wrap{max-width:1240px;margin:0 auto;padding-block:24px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:22px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;gap:8px 24px}
+h1{font-family:var(--f-display);font-weight:400;font-size:34px;line-height:1.1;margin:0;letter-spacing:.04em}
+.sub{color:var(--muted);margin:0;flex:1 1 320px;min-width:0}
+h2{font-family:var(--f-display);font-weight:400;font-size:22px;margin:0 0 10px;letter-spacing:.03em}
+.stats{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;color:var(--muted)}
+.stats b{font-family:var(--f-mono);font-weight:500;color:var(--ink);font-size:15px;margin-right:3px}
+.sheet{background:var(--sheet);border:1px solid var(--line);border-radius:6px;padding:16px}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin-bottom:10px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:inherit;font-size:13px;color:var(--ink);background:transparent;border:1px solid var(--line);border-radius:999px;padding:4px 12px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--sheet);border-color:var(--ink)}
+.chip:focus-visible,.btn:focus-visible,tr:focus-visible{outline:2px solid var(--hl);outline-offset:2px}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--muted);margin-left:auto}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.plan{overflow-x:auto}
+.plan svg{display:block;width:100%;min-width:760px;height:auto}
+.plan text{font-family:var(--f-body)}
+.it{cursor:pointer}
+.it .fp{stroke-width:2}
+.it.dim{opacity:.18}
+.it.on .fp,.it.on .dot{stroke:var(--hl);stroke-width:5}
+.note{font-size:12.5px;color:var(--muted);margin:8px 0 0}
+.grid2{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:22px;align-items:start}
+@media (max-width:900px){.grid2{grid-template-columns:minmax(0,1fr)}}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th{text-align:left;font-weight:500;color:var(--muted);font-size:12px;letter-spacing:.06em;border-bottom:1px solid var(--line);padding:6px 8px;white-space:nowrap}
+td{border-bottom:1px solid var(--line);padding:6px 8px;vertical-align:top}
+td.n,td.a,td.s{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+td.n{font-weight:500}
+tr.room td{background:var(--room);font-family:var(--f-display);font-size:16px;padding:8px}
+tr.room small{font-family:var(--f-body);font-size:12px;color:var(--muted);margin-left:10px}
+tbody tr.row{cursor:pointer}
+tbody tr.row:hover td{background:color-mix(in srgb,var(--hl) 8%,transparent)}
+tbody tr.row.on td{background:color-mix(in srgb,var(--hl) 16%,transparent)}
+.tier{display:inline-block;font-size:11px;padding:0 7px;border-radius:999px;color:var(--sheet)}
+.t-big{background:var(--big)}.t-mid{background:var(--mid)}.t-small{background:var(--small)}
+.lay{font-size:12px;color:var(--muted)}
+ol.todo{margin:0;padding-left:20px;display:grid;gap:8px}
+ol.todo b{font-weight:600}
+.btn{font:inherit;font-size:13px;background:var(--ink);color:var(--sheet);border:0;border-radius:6px;padding:7px 14px;cursor:pointer}
+.copied{font-size:12px;color:var(--muted);margin-left:8px}
+textarea{width:100%;height:120px;margin-top:8px;font-family:var(--f-mono);font-size:11px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:6px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>长屋布局稿</h1>
+    <p class="sub">梵度矿坑 · 贴纸放置第一稿。三间横向长屋，剖切视角：后墙高、前墙矮、屋顶揭开。1 格 = 5 尺 = 1.5 米，房屋内部 16.5 × 6 米（11 × 4 格）。</p>
+  </header>
+  <div class="stats" id="stats"></div>
+
+  <section class="sheet">
+    <div class="toolbar">
+      <div class="chips" role="group" aria-label="显示哪一层">
+        <button class="chip" type="button" data-layer="all" aria-pressed="true">全部</button>
+        <button class="chip" type="button" data-layer="floor" aria-pressed="false">地面</button>
+        <button class="chip" type="button" data-layer="wall" aria-pressed="false">墙面</button>
+        <button class="chip" type="button" data-layer="stack" aria-pressed="false">叠放</button>
+      </div>
+      <div class="legend"><span><i style="background:var(--big)"></i>大件</span><span><i style="background:var(--mid)"></i>中件</span><span><i style="background:var(--small)"></i>小摆件</span><span>方块 = 地面 · 墙上方的标签 = 墙面 · 小圆点 = 叠放在家具上</span></div>
+    </div>
+    <div class="plan"><svg id="plan" role="img" aria-label="长屋俯视平面图"></svg></div>
+    <p class="note">点平面图上的编号，或点下面表格的一行，两边会同时高亮。叠放物件的圆点只表示"放在哪件家具上"，具体落点到 3D 里再微调。</p>
+  </section>
+
+  <div class="grid2">
+    <section class="sheet">
+      <h2>贴纸放置表</h2>
+      <div class="tbl"><table>
+        <thead><tr><th>#</th><th>名称</th><th>素材</th><th>级别</th><th>尺寸 长×宽×高 m</th><th>放在哪</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table></div>
+    </section>
+    <div style="display:grid;gap:22px;min-width:0">
+      <section class="sheet">
+        <h2>需要你们确认</h2>
+        <ol class="todo">
+          <li><b>比例</b>：按跑团标准 1 格 = 5 尺 = 1.5 米，家具按真实尺寸。一张床约占 1 × 1.5 格。</li>
+          <li><b>两批风格</b>：第一批更亮更新，所以卧室的家具、石墙、门和石板地都用第一批，当作"屋主最用心打理的房间"；仓储间和大厅用第二批的旧木头。扶手椅、鹿角、锡酒杯这几件第一批的东西点缀在大厅。</li>
+          <li><b>房屋外壳固定</b>：21 件墙、柱、梁、屋架、地砖组成底板，不做成贴纸，玩家只贴里面的 89 件。</li>
+          <li><b>叠放层</b>：33 件要贴在家具上面（架子上的罐子、桌上的面包、床上的被子）。必须先贴好下面那件家具，才能贴上面的东西。</li>
+          <li><b>屋外不放东西</b>：原来门外的 3 件已移进屋里（矿石堆、落叶堆进仓储间，盆栽进卧室），屋外以后换成夜晚森林背景。</li>
+        </ol>
+      </section>
+      <section class="sheet">
+        <h2>面数档位</h2>
+        <div class="tbl"><table>
+          <thead><tr><th>级别</th><th>Lux3D 面数</th><th>数量</th></tr></thead>
+          <tbody id="faces"></tbody>
+        </table></div>
+        <p class="note">已经按 5 万面生成的不用重做，导入时脚本会自动减面、缩贴图。</p>
+      </section>
+      <section class="sheet">
+        <h2>房屋构件（固定）</h2>
+        <div class="tbl"><table>
+          <thead><tr><th>素材</th><th>名称</th><th>尺寸 m</th><th>用在哪</th></tr></thead>
+          <tbody id="shell"></tbody>
+        </table></div>
+      </section>
+      <section class="sheet">
+        <h2>给游戏的数据</h2>
+        <p class="note" style="margin-top:0">这份布局的全部坐标，改完布局后复制给我，我直接接进游戏。</p>
+        <div style="margin-top:8px"><button class="btn" id="copy" type="button">复制布局数据</button><span class="copied" id="copied" aria-live="polite"></span></div>
+        <textarea id="json" readonly aria-label="布局数据" hidden></textarea>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+const D = {"unit": "m", "grid": 1.5, "house": {"w": 16.5, "d": 6, "backH": 2.6, "frontH": 0.9}, "rooms": [{"id": "S", "name": "仓储间", "x0": 0, "x1": 4.5, "story": "补给堆满了，门口还丢着一桶水"}, {"id": "H", "name": "大厅", "x0": 4.5, "x1": 12, "story": "灶台、长桌和篝火，冒险者在这里歇脚"}, {"id": "B", "name": "卧室", "x0": 12, "x1": 16.5, "story": "屋主打理得最用心的一间"}], "doors": [{"wall": "front", "a": 0.6, "b": 1.6, "label": "前门"}, {"wall": "p1", "a": 4.2, "b": 5.4, "label": "门洞"}, {"wall": "p2", "a": 4.2, "b": 5.4, "label": "卧室门"}], "windows": [{"wall": "back", "a": 10.5, "b": 12, "label": "窗"}, {"wall": "back", "a": 13.5, "b": 15, "label": "窗"}], "partitions": [4.5, 12], "items": [{"n": 1, "asset": "b2-F04", "name": "木架", "tier": "big", "L": 1.4, "W": 0.5, "H": 1.8, "layer": "floor", "room": "S", "x": 1.2, "z": 0.3, "rot": 0, "fw": 1.4, "fd": 0.5}, {"n": 2, "asset": "b2-S01", "name": "木箱", "tier": "mid", "L": 0.7, "W": 0.7, "H": 0.7, "layer": "floor", "room": "S", "x": 2.75, "z": 0.45, "rot": 0, "fw": 0.7, "fd": 0.7}, {"n": 3, "asset": "b2-S04", "name": "木桶", "tier": "mid", "L": 0.6, "W": 0.6, "H": 0.9, "layer": "floor", "room": "S", "x": 3.85, "z": 0.4, "rot": 0, "fw": 0.6, "fd": 0.6}, {"n": 4, "asset": "b1-P01", "name": "木桶·铁箍", "tier": "mid", "L": 0.55, "W": 0.55, "H": 0.85, "layer": "floor", "room": "S", "x": 3.9, "z": 1.15, "rot": 0, "fw": 0.55, "fd": 0.55}, {"n": 5, "asset": "b2-D02", "name": "碎木板", "tier": "mid", "L": 1.0, "W": 0.5, "H": 0.25, "layer": "floor", "room": "S", "x": 0.5, "z": 1.25, "rot": 90, "fw": 0.5, "fd": 1.0}, {"n": 6, "asset": "b2-F05", "name": "工作台", "tier": "big", "L": 1.6, "W": 0.75, "H": 0.85, "layer": "floor", "room": "S", "x": 0.42, "z": 2.65, "rot": 90, "fw": 0.75, "fd": 1.6}, {"n": 7, "asset": "b2-S08", "name": "蔬菜筐", "tier": "mid", "L": 0.5, "W": 0.5, "H": 0.45, "layer": "floor", "room": "S", "x": 1.95, "z": 1.2, "rot": 0, "fw": 0.5, "fd": 0.5}, {"n": 8, "asset": "b1-P14", "name": "菜篮", "tier": "mid", "L": 0.45, "W": 0.45, "H": 0.45, "layer": "floor", "room": "S", "x": 2.45, "z": 1.35, "rot": 0, "fw": 0.45, "fd": 0.45}, {"n": 9, "asset": "b1-P04", "name": "敞口木箱", "tier": "mid", "L": 0.6, "W": 0.45, "H": 0.35, "layer": "floor", "room": "S", "x": 3.0, "z": 1.5, "rot": 0, "fw": 0.6, "fd": 0.45}, {"n": 10, "asset": "b2-S02", "name": "敞口板条箱", "tier": "mid", "L": 0.7, "W": 0.5, "H": 0.4, "layer": "floor", "room": "S", "x": 1.65, "z": 2.15, "rot": 0, "fw": 0.7, "fd": 0.5}, {"n": 11, "asset": "b2-S06", "name": "扎口麻袋", "tier": "mid", "L": 0.5, "W": 0.45, "H": 0.6, "layer": "floor", "room": "S", "x": 3.95, "z": 1.95, "rot": 0, "fw": 0.5, "fd": 0.45}, {"n": 12, "asset": "b1-P06", "name": "麻袋", "tier": "mid", "L": 0.5, "W": 0.45, "H": 0.6, "layer": "floor", "room": "S", "x": 3.95, "z": 2.6, "rot": 0, "fw": 0.5, "fd": 0.45}, {"n": 13, "asset": "b2-S07", "name": "敞口粮袋", "tier": "mid", "L": 0.55, "W": 0.5, "H": 0.55, "layer": "floor", "room": "S", "x": 3.35, "z": 2.35, "rot": 0, "fw": 0.55, "fd": 0.5}, {"n": 14, "asset": "b2-S05", "name": "柳条筐", "tier": "mid", "L": 0.5, "W": 0.5, "H": 0.4, "layer": "floor", "room": "S", "x": 3.3, "z": 3.15, "rot": 0, "fw": 0.5, "fd": 0.5}, {"n": 15, "asset": "b2-D04", "name": "干草堆", "tier": "mid", "L": 1.2, "W": 1.0, "H": 0.3, "layer": "floor", "room": "S", "x": 2.0, "z": 3.4, "rot": 0, "fw": 1.2, "fd": 1.0}, {"n": 16, "asset": "b1-P20", "name": "柴捆", "tier": "mid", "L": 0.8, "W": 0.4, "H": 0.35, "layer": "floor", "room": "S", "x": 0.35, "z": 4.55, "rot": 90, "fw": 0.4, "fd": 0.8}, {"n": 17, "asset": "b2-T11", "name": "木水桶", "tier": "mid", "L": 0.35, "W": 0.35, "H": 0.4, "layer": "floor", "room": "S", "x": 2.0, "z": 5.6, "rot": 0, "fw": 0.35, "fd": 0.35}, {"n": 18, "asset": "b2-S03", "name": "铁箍宝箱", "tier": "mid", "L": 0.9, "W": 0.55, "H": 0.55, "layer": "floor", "room": "S", "x": 2.85, "z": 5.55, "rot": 0, "fw": 0.9, "fd": 0.55}, {"n": 19, "asset": "b1-P02", "name": "小铁箍箱", "tier": "mid", "L": 0.6, "W": 0.4, "H": 0.4, "layer": "floor", "room": "S", "x": 3.85, "z": 5.6, "rot": 0, "fw": 0.6, "fd": 0.4}, {"n": 20, "asset": "b2-D05", "name": "落叶堆", "tier": "mid", "L": 1.0, "W": 0.8, "H": 0.08, "layer": "floor", "room": "S", "x": 1.15, "z": 5.35, "rot": 0, "fw": 1.0, "fd": 0.8}, {"n": 21, "asset": "b2-D03", "name": "矿石堆", "tier": "mid", "L": 1.0, "W": 0.8, "H": 0.5, "layer": "floor", "room": "S", "x": 3.2, "z": 4.4, "rot": 0, "fw": 1.0, "fd": 0.8}, {"n": 22, "asset": "b2-F10", "name": "挂钩板", "tier": "mid", "L": 1.0, "W": 0.15, "H": 0.2, "layer": "wall", "room": "S", "wall": "back", "along": 3.3, "y": 1.7}, {"n": 23, "asset": "b2-P05", "name": "陶罐", "tier": "small", "L": 0.3, "W": 0.3, "H": 0.35, "layer": "stack", "room": "S", "on": "b2-F04", "onN": 1, "note": "架子中层", "u": -0.2, "v": 0, "ymode": "level:0.5"}, {"n": 24, "asset": "b1-P05", "name": "小柳条篮", "tier": "small", "L": 0.4, "W": 0.4, "H": 0.25, "layer": "stack", "room": "S", "on": "b2-F04", "onN": 1, "note": "架子底层", "u": 0.25, "v": 0, "ymode": "level:0.08"}, {"n": 25, "asset": "b1-P03", "name": "木箱（叠放）", "tier": "mid", "L": 0.6, "W": 0.6, "H": 0.6, "layer": "stack", "room": "S", "on": "b2-S01", "onN": 2, "note": "摞在木箱上", "u": 0, "v": 0, "ymode": "top"}, {"n": 26, "asset": "b2-T06", "name": "斧头", "tier": "small", "L": 0.7, "W": 0.2, "H": 0.05, "layer": "stack", "room": "S", "on": "b2-F05", "onN": 6, "note": "台面", "u": -0.2, "v": 0, "ymode": "top"}, {"n": 27, "asset": "b2-T07", "name": "铁锤", "tier": "small", "L": 0.5, "W": 0.2, "H": 0.1, "layer": "stack", "room": "S", "on": "b2-F05", "onN": 6, "note": "台面", "u": 0.25, "v": 0, "ymode": "top"}, {"n": 28, "asset": "b2-T09", "name": "兽皮卷", "tier": "small", "L": 0.6, "W": 0.4, "H": 0.15, "layer": "stack", "room": "S", "on": "b2-S03", "onN": 18, "note": "箱盖上", "u": 0, "v": 0, "ymode": "top"}, {"n": 29, "asset": "b2-T08", "name": "麻绳卷", "tier": "small", "L": 0.45, "W": 0.45, "H": 0.15, "layer": "stack", "room": "S", "on": "b2-F10", "onN": 22, "note": "挂在挂钩上", "u": 0, "v": 0, "ymode": "hang:0.35"}, {"n": 30, "asset": "b1-F05", "name": "石砌灶台", "tier": "big", "L": 1.2, "W": 0.9, "H": 1.6, "layer": "floor", "room": "H", "x": 5.15, "z": 0.5, "rot": 0, "fw": 1.2, "fd": 0.9}, {"n": 31, "asset": "b1-F04", "name": "L形橱柜", "tier": "big", "L": 1.8, "W": 1.0, "H": 0.85, "layer": "floor", "room": "H", "x": 6.75, "z": 0.52, "rot": 0, "fw": 1.8, "fd": 1.0}, {"n": 32, "asset": "b1-F06", "name": "矮柜", "tier": "big", "L": 1.4, "W": 0.5, "H": 0.8, "layer": "floor", "room": "H", "x": 8.6, "z": 0.3, "rot": 0, "fw": 1.4, "fd": 0.5}, {"n": 33, "asset": "b2-F09", "name": "方木小桌", "tier": "mid", "L": 0.7, "W": 0.7, "H": 0.7, "layer": "floor", "room": "H", "x": 11.45, "z": 0.45, "rot": 0, "fw": 0.7, "fd": 0.7}, {"n": 34, "asset": "b1-F03", "name": "靠背长凳", "tier": "mid", "L": 1.5, "W": 0.5, "H": 0.9, "layer": "floor", "room": "H", "x": 6.6, "z": 1.48, "rot": 0, "fw": 1.5, "fd": 0.5}, {"n": 35, "asset": "b2-F01", "name": "长桌", "tier": "big", "L": 1.8, "W": 0.75, "H": 0.75, "layer": "floor", "room": "H", "x": 6.6, "z": 2.3, "rot": 0, "fw": 1.8, "fd": 0.75}, {"n": 36, "asset": "b2-F02", "name": "长凳", "tier": "mid", "L": 1.6, "W": 0.4, "H": 0.45, "layer": "floor", "room": "H", "x": 6.6, "z": 3.05, "rot": 0, "fw": 1.6, "fd": 0.4}, {"n": 37, "asset": "b2-F03", "name": "三脚凳", "tier": "mid", "L": 0.45, "W": 0.45, "H": 0.5, "layer": "floor", "room": "H", "x": 5.3, "z": 2.3, "rot": 0, "fw": 0.45, "fd": 0.45}, {"n": 38, "asset": "b2-D01", "name": "柴堆", "tier": "mid", "L": 1.0, "W": 0.6, "H": 0.6, "layer": "floor", "room": "H", "x": 7.2, "z": 3.95, "rot": 0, "fw": 1.0, "fd": 0.6}, {"n": 39, "asset": "b2-P01", "name": "篝火", "tier": "mid", "L": 1.3, "W": 1.3, "H": 0.4, "layer": "floor", "room": "H", "x": 8.6, "z": 3.6, "rot": 0, "fw": 1.3, "fd": 1.3}, {"n": 40, "asset": "b1-F07", "name": "绿垫扶手椅", "tier": "big", "L": 0.8, "W": 0.8, "H": 1.0, "layer": "floor", "room": "H", "x": 10.2, "z": 2.6, "rot": 270, "fw": 0.8, "fd": 0.8}, {"n": 41, "asset": "b1-F08", "name": "圆木小桌", "tier": "mid", "L": 0.7, "W": 0.7, "H": 0.7, "layer": "floor", "room": "H", "x": 10.5, "z": 1.55, "rot": 0, "fw": 0.7, "fd": 0.7}, {"n": 42, "asset": "b2-T02", "name": "捆好的铺盖卷", "tier": "mid", "L": 0.9, "W": 0.35, "H": 0.35, "layer": "floor", "room": "H", "x": 7.5, "z": 4.95, "rot": 0, "fw": 0.9, "fd": 0.35}, {"n": 43, "asset": "b2-T01", "name": "皮背包", "tier": "mid", "L": 0.45, "W": 0.35, "H": 0.55, "layer": "floor", "room": "H", "x": 8.6, "z": 4.95, "rot": 0, "fw": 0.45, "fd": 0.35}, {"n": 44, "asset": "b1-F14", "name": "椭圆矮桌", "tier": "big", "L": 1.4, "W": 0.8, "H": 0.6, "layer": "floor", "room": "H", "x": 10.6, "z": 4.6, "rot": 0, "fw": 1.4, "fd": 0.8}, {"n": 45, "asset": "b1-D04", "name": "倒挂草药束", "tier": "small", "L": 0.3, "W": 0.15, "H": 0.6, "layer": "wall", "room": "H", "wall": "back", "along": 6.1, "y": 1.9}, {"n": 46, "asset": "b2-T10", "name": "干草药捆", "tier": "small", "L": 0.5, "W": 0.15, "H": 0.2, "layer": "wall", "room": "H", "wall": "back", "along": 6.6, "y": 1.95}, {"n": 47, "asset": "b2-P09", "name": "平底锅", "tier": "small", "L": 0.55, "W": 0.3, "H": 0.05, "layer": "wall", "room": "H", "wall": "back", "along": 7.3, "y": 1.6}, {"n": 48, "asset": "b2-P10", "name": "汤勺", "tier": "small", "L": 0.4, "W": 0.1, "H": 0.05, "layer": "wall", "room": "H", "wall": "back", "along": 7.8, "y": 1.6}, {"n": 49, "asset": "b1-S04", "name": "鹿角挂饰", "tier": "small", "L": 0.7, "W": 0.3, "H": 0.5, "layer": "wall", "room": "H", "wall": "back", "along": 9.3, "y": 2.0}, {"n": 50, "asset": "b2-T03", "name": "长剑", "tier": "small", "L": 1.0, "W": 0.2, "H": 0.05, "layer": "wall", "room": "H", "wall": "p2", "along": 1.2, "y": 1.5}, {"n": 51, "asset": "b2-T04", "name": "长弓", "tier": "small", "L": 1.4, "W": 0.3, "H": 0.05, "layer": "wall", "room": "H", "wall": "p2", "along": 2.1, "y": 1.6}, {"n": 52, "asset": "b2-T05", "name": "箭袋", "tier": "small", "L": 0.25, "W": 0.2, "H": 0.8, "layer": "wall", "room": "H", "wall": "p2", "along": 2.9, "y": 1.3}, {"n": 53, "asset": "b2-P02", "name": "吊锅架", "tier": "mid", "L": 1.4, "W": 0.6, "H": 1.3, "layer": "stack", "room": "H", "on": "b2-P01", "onN": 39, "note": "跨在篝火上", "u": 0, "v": 0, "ymode": "floor"}, {"n": 54, "asset": "b2-P03", "name": "铁锅", "tier": "mid", "L": 0.5, "W": 0.5, "H": 0.4, "layer": "stack", "room": "H", "on": "b2-P02", "onN": 53, "note": "挂在吊锅架钩子上", "u": 0, "v": 0, "ymode": "hang:0.3"}, {"n": 55, "asset": "b1-P11", "name": "铁水壶", "tier": "small", "L": 0.4, "W": 0.3, "H": 0.35, "layer": "stack", "room": "H", "on": "b1-F05", "onN": 30, "note": "灶台上", "u": -0.15, "v": 0.1, "ymode": "top"}, {"n": 56, "asset": "b1-P12", "name": "砧板", "tier": "small", "L": 0.5, "W": 0.25, "H": 0.04, "layer": "stack", "room": "H", "on": "b1-F04", "onN": 31, "note": "台面", "u": -0.2, "v": 0.1, "ymode": "top"}, {"n": 57, "asset": "b1-P13", "name": "厨刀", "tier": "small", "L": 0.35, "W": 0.06, "H": 0.03, "layer": "stack", "room": "H", "on": "b1-P12", "onN": 56, "note": "放在砧板上", "u": 0, "v": 0, "ymode": "top"}, {"n": 58, "asset": "b1-P10", "name": "陶水罐", "tier": "small", "L": 0.3, "W": 0.25, "H": 0.35, "layer": "stack", "room": "H", "on": "b1-F04", "onN": 31, "note": "台面", "u": 0.15, "v": 0.1, "ymode": "top"}, {"n": 59, "asset": "b1-P08", "name": "绿釉碗", "tier": "small", "L": 0.3, "W": 0.3, "H": 0.12, "layer": "stack", "room": "H", "on": "b1-F04", "onN": 31, "note": "台面", "u": 0.35, "v": 0.1, "ymode": "top"}, {"n": 60, "asset": "b1-P09", "name": "陶盘", "tier": "small", "L": 0.3, "W": 0.3, "H": 0.04, "layer": "stack", "room": "H", "on": "b1-F06", "onN": 32, "note": "柜面", "u": -0.15, "v": 0, "ymode": "top"}, {"n": 61, "asset": "b1-P07", "name": "带盖陶罐", "tier": "small", "L": 0.35, "W": 0.35, "H": 0.4, "layer": "stack", "room": "H", "on": "b2-F09", "onN": 33, "note": "桌面", "u": 0, "v": 0, "ymode": "top"}, {"n": 62, "asset": "b2-P06", "name": "木碗", "tier": "small", "L": 0.2, "W": 0.2, "H": 0.08, "layer": "stack", "room": "H", "on": "b2-F01", "onN": 35, "note": "桌面", "u": -0.38, "v": 0.05, "ymode": "top"}, {"n": 63, "asset": "b2-P07", "name": "木盘", "tier": "small", "L": 0.28, "W": 0.28, "H": 0.04, "layer": "stack", "room": "H", "on": "b2-F01", "onN": 35, "note": "桌面", "u": -0.2, "v": -0.1, "ymode": "top"}, {"n": 64, "asset": "b2-P08", "name": "木酒杯", "tier": "small", "L": 0.15, "W": 0.12, "H": 0.15, "layer": "stack", "room": "H", "on": "b2-F01", "onN": 35, "note": "桌面", "u": -0.05, "v": 0.15, "ymode": "top"}, {"n": 65, "asset": "b2-P04", "name": "陶壶", "tier": "small", "L": 0.25, "W": 0.2, "H": 0.35, "layer": "stack", "room": "H", "on": "b2-F01", "onN": 35, "note": "桌面", "u": 0.1, "v": -0.12, "ymode": "top"}, {"n": 66, "asset": "b2-P11", "name": "面包", "tier": "small", "L": 0.3, "W": 0.15, "H": 0.12, "layer": "stack", "room": "H", "on": "b2-F01", "onN": 35, "note": "桌面", "u": 0.26, "v": 0.08, "ymode": "top"}, {"n": 67, "asset": "b2-P12", "name": "烛台蜡烛", "tier": "small", "L": 0.15, "W": 0.15, "H": 0.3, "layer": "stack", "room": "H", "on": "b2-F01", "onN": 35, "note": "桌面", "u": 0.4, "v": -0.1, "ymode": "top"}, {"n": 68, "asset": "b1-S05", "name": "锡酒杯", "tier": "small", "L": 0.15, "W": 0.12, "H": 0.15, "layer": "stack", "room": "H", "on": "b1-F08", "onN": 41, "note": "桌面", "u": 0, "v": 0, "ymode": "top"}, {"n": 69, "asset": "b2-F06", "name": "木床架", "tier": "big", "L": 2.1, "W": 1.2, "H": 0.5, "layer": "floor", "room": "B", "x": 12.9, "z": 1.1, "rot": 90, "fw": 1.2, "fd": 2.1}, {"n": 70, "asset": "b1-F09", "name": "木床架·精细", "tier": "big", "L": 2.0, "W": 1.1, "H": 0.55, "layer": "floor", "room": "B", "x": 15.85, "z": 1.05, "rot": 90, "fw": 1.1, "fd": 2.0}, {"n": 71, "asset": "b1-F01", "name": "床边矮桌", "tier": "mid", "L": 1.2, "W": 0.5, "H": 0.45, "layer": "floor", "room": "B", "x": 14.4, "z": 0.35, "rot": 0, "fw": 1.2, "fd": 0.5}, {"n": 72, "asset": "b1-D01", "name": "花纹地毯", "tier": "mid", "L": 2.0, "W": 1.3, "H": 0.02, "layer": "floor", "room": "B", "x": 14.4, "z": 1.75, "rot": 0, "fw": 2.0, "fd": 1.3}, {"n": 73, "asset": "b1-P19", "name": "小铁炉", "tier": "mid", "L": 0.6, "W": 0.5, "H": 0.8, "layer": "floor", "room": "B", "x": 12.45, "z": 3.0, "rot": 0, "fw": 0.6, "fd": 0.5}, {"n": 74, "asset": "b1-S01", "name": "双门衣柜", "tier": "big", "L": 1.0, "W": 0.55, "H": 1.9, "layer": "floor", "room": "B", "x": 16.2, "z": 3.0, "rot": 90, "fw": 0.55, "fd": 1.0}, {"n": 75, "asset": "b1-S02", "name": "书柜", "tier": "big", "L": 0.9, "W": 0.4, "H": 1.7, "layer": "floor", "room": "B", "x": 16.25, "z": 4.2, "rot": 90, "fw": 0.4, "fd": 0.9}, {"n": 76, "asset": "b1-F13", "name": "抽屉书桌", "tier": "big", "L": 1.2, "W": 0.6, "H": 0.78, "layer": "floor", "room": "B", "x": 14.0, "z": 5.5, "rot": 0, "fw": 1.2, "fd": 0.6}, {"n": 77, "asset": "b1-F02", "name": "靠背木椅", "tier": "mid", "L": 0.5, "W": 0.5, "H": 1.0, "layer": "floor", "room": "B", "x": 14.0, "z": 4.75, "rot": 180, "fw": 0.5, "fd": 0.5}, {"n": 78, "asset": "b1-D02", "name": "木箱盆栽", "tier": "mid", "L": 0.5, "W": 0.5, "H": 0.7, "layer": "floor", "room": "B", "x": 15.9, "z": 5.6, "rot": 0, "fw": 0.5, "fd": 0.5}, {"n": 79, "asset": "b1-S03", "name": "壁挂提灯", "tier": "small", "L": 0.3, "W": 0.35, "H": 0.6, "layer": "wall", "room": "B", "wall": "back", "along": 12.9, "y": 1.9}, {"n": 80, "asset": "b2-F07", "name": "铺盖褥子", "tier": "mid", "L": 1.9, "W": 0.95, "H": 0.3, "layer": "stack", "room": "B", "on": "b2-F06", "onN": 69, "note": "铺在床架上", "u": 0, "v": 0, "ymode": "top"}, {"n": 81, "asset": "b2-F08", "name": "粗毛毯", "tier": "mid", "L": 0.9, "W": 0.6, "H": 0.15, "layer": "stack", "room": "B", "on": "b2-F07", "onN": 80, "note": "叠在褥子上", "u": 0.25, "v": 0, "ymode": "top"}, {"n": 82, "asset": "b1-F10", "name": "床垫", "tier": "mid", "L": 1.9, "W": 0.9, "H": 0.2, "layer": "stack", "room": "B", "on": "b1-F09", "onN": 70, "note": "铺在床架上", "u": 0, "v": 0, "ymode": "top"}, {"n": 83, "asset": "b1-F11", "name": "绿毛毯", "tier": "mid", "L": 0.8, "W": 0.6, "H": 0.15, "layer": "stack", "room": "B", "on": "b1-F10", "onN": 82, "note": "叠在床垫上", "u": 0.25, "v": 0, "ymode": "top"}, {"n": 84, "asset": "b1-F12", "name": "枕头", "tier": "small", "L": 0.6, "W": 0.4, "H": 0.15, "layer": "stack", "room": "B", "on": "b1-F10", "onN": 82, "note": "床头", "u": -0.38, "v": 0, "ymode": "top"}, {"n": 85, "asset": "b1-P16", "name": "皮面书", "tier": "small", "L": 0.25, "W": 0.18, "H": 0.06, "layer": "stack", "room": "B", "on": "b1-F01", "onN": 71, "note": "桌面", "u": 0.2, "v": 0, "ymode": "top"}, {"n": 86, "asset": "b1-P17", "name": "卷轴", "tier": "small", "L": 0.4, "W": 0.1, "H": 0.1, "layer": "stack", "room": "B", "on": "b1-S02", "onN": 75, "note": "书柜上层", "u": 0, "v": 0, "ymode": "level:0.55"}, {"n": 87, "asset": "b1-D03", "name": "迷迭香盆栽", "tier": "small", "L": 0.3, "W": 0.3, "H": 0.45, "layer": "stack", "room": "B", "on": "b1-S02", "onN": 75, "note": "书柜顶", "u": 0, "v": 0, "ymode": "top"}, {"n": 88, "asset": "b1-P15", "name": "摊开的书", "tier": "small", "L": 0.35, "W": 0.25, "H": 0.05, "layer": "stack", "room": "B", "on": "b1-F13", "onN": 76, "note": "桌面", "u": -0.15, "v": 0, "ymode": "top"}, {"n": 89, "asset": "b1-P18", "name": "黄铜烛台", "tier": "small", "L": 0.15, "W": 0.15, "H": 0.2, "layer": "stack", "room": "B", "on": "b1-F13", "onN": 76, "note": "桌面", "u": 0.3, "v": -0.1, "ymode": "top"}], "kit": [{"asset": "b2-A16", "x": 0.75, "z": 0.75, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b2-A16", "x": 0.75, "z": 2.25, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b2-A16", "x": 0.75, "z": 3.75, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b2-A16", "x": 0.75, "z": 5.25, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b2-A16", "x": 2.25, "z": 0.75, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b2-A16", "x": 2.25, "z": 2.25, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b2-A16", "x": 2.25, "z": 3.75, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b2-A16", "x": 2.25, "z": 5.25, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b2-A16", "x": 3.75, "z": 0.75, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b2-A16", "x": 3.75, "z": 2.25, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b2-A16", "x": 3.75, "z": 3.75, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b2-A16", "x": 3.75, "z": 5.25, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b2-A16", "x": 5.25, "z": 0.75, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b2-A16", "x": 5.25, "z": 2.25, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b2-A16", "x": 5.25, "z": 3.75, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b2-A16", "x": 5.25, "z": 5.25, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b2-A16", "x": 6.75, "z": 0.75, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b2-A16", "x": 6.75, "z": 2.25, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b2-A16", "x": 6.75, "z": 3.75, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b2-A16", "x": 6.75, "z": 5.25, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b2-A16", "x": 8.25, "z": 0.75, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b2-A16", "x": 8.25, "z": 2.25, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b2-A16", "x": 8.25, "z": 3.75, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b2-A16", "x": 8.25, "z": 5.25, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b2-A16", "x": 9.75, "z": 0.75, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b2-A16", "x": 9.75, "z": 2.25, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b2-A16", "x": 9.75, "z": 3.75, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b2-A16", "x": 9.75, "z": 5.25, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b2-A16", "x": 11.25, "z": 0.75, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b2-A16", "x": 11.25, "z": 2.25, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b2-A16", "x": 11.25, "z": 3.75, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b2-A16", "x": 11.25, "z": 5.25, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b1-A05", "x": 12.75, "z": 0.75, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b1-A05", "x": 12.75, "z": 2.25, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b1-A05", "x": 12.75, "z": 3.75, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b1-A05", "x": 12.75, "z": 5.25, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b1-A05", "x": 14.25, "z": 0.75, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b1-A05", "x": 14.25, "z": 2.25, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b1-A05", "x": 14.25, "z": 3.75, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b1-A05", "x": 14.25, "z": 5.25, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b1-A05", "x": 15.75, "z": 0.75, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b1-A05", "x": 15.75, "z": 2.25, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b1-A05", "x": 15.75, "z": 3.75, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b1-A05", "x": 15.75, "z": 5.25, "ry": 0, "y": -0.1, "L": 1.5, "H": 0.1, "W": 1.5, "part": "floor", "tilt": 0}, {"asset": "b2-A05", "x": 0.75, "z": 0.75, "ry": 0, "y": 0, "L": 1.5, "H": 2.6, "W": 1.5, "part": "corner", "tilt": 0}, {"asset": "b2-A01", "x": 2.25, "z": -0.125, "ry": 0, "y": 0, "L": 1.5, "H": 2.6, "W": 0.25, "part": "wall", "tilt": 0}, {"asset": "b2-A01", "x": 3.75, "z": -0.125, "ry": 0, "y": 0, "L": 1.5, "H": 2.6, "W": 0.25, "part": "wall", "tilt": 0}, {"asset": "b2-A01", "x": 5.25, "z": -0.125, "ry": 0, "y": 0, "L": 1.5, "H": 2.6, "W": 0.25, "part": "wall", "tilt": 0}, {"asset": "b2-A01", "x": 6.75, "z": -0.125, "ry": 0, "y": 0, "L": 1.5, "H": 2.6, "W": 0.25, "part": "wall", "tilt": 0}, {"asset": "b2-A01", "x": 8.25, "z": -0.125, "ry": 0, "y": 0, "L": 1.5, "H": 2.6, "W": 0.25, "part": "wall", "tilt": 0}, {"asset": "b2-A01", "x": 9.75, "z": -0.125, "ry": 0, "y": 0, "L": 1.5, "H": 2.6, "W": 0.25, "part": "wall", "tilt": 0}, {"asset": "b2-A03", "x": 11.25, "z": -0.125, "ry": 0, "y": 0, "L": 1.5, "H": 2.6, "W": 0.25, "part": "wall", "tilt": 0}, {"asset": "b1-A01", "x": 12.75, "z": -0.125, "ry": 0, "y": 0, "L": 1.5, "H": 2.6, "W": 0.25, "part": "wall", "tilt": 0}, {"asset": "b1-A02", "x": 14.25, "z": -0.125, "ry": 0, "y": 0, "L": 1.5, "H": 2.6, "W": 0.25, "part": "wall", "tilt": 0}, {"asset": "b1-A01", "x": 15.75, "z": -0.125, "ry": 0, "y": 0, "L": 1.5, "H": 2.6, "W": 0.25, "part": "wall", "tilt": 0}, {"asset": "b2-A01", "x": -0.125, "z": 2.25, "ry": 90, "y": 0, "L": 1.5, "H": 2.6, "W": 0.25, "part": "wall", "tilt": 0}, {"asset": "b2-A01", "x": -0.125, "z": 3.75, "ry": 90, "y": 0, "L": 1.5, "H": 2.6, "W": 0.25, "part": "wall", "tilt": 0}, {"asset": "b2-A01", "x": -0.125, "z": 5.25, "ry": 90, "y": 0, "L": 1.5, "H": 2.6, "W": 0.25, "part": "wall", "tilt": 0}, {"asset": "b1-A01", "x": 16.625, "z": 0.75, "ry": 90, "y": 0, "L": 1.5, "H": 2.6, "W": 0.25, "part": "wall", "tilt": 0}, {"asset": "b1-A01", "x": 16.625, "z": 2.25, "ry": 90, "y": 0, "L": 1.5, "H": 2.6, "W": 0.25, "part": "wall", "tilt": 0}, {"asset": "b1-A01", "x": 16.625, "z": 3.75, "ry": 90, "y": 0, "L": 1.5, "H": 2.6, "W": 0.25, "part": "wall", "tilt": 0}, {"asset": "b1-A01", "x": 16.625, "z": 5.25, "ry": 90, "y": 0, "L": 1.5, "H": 2.6, "W": 0.25, "part": "wall", "tilt": 0}, {"asset": "b2-A01", "x": 4.5, "z": 0.75, "ry": 90, "y": 0, "L": 1.5, "H": 2.6, "W": 0.25, "part": "wall", "tilt": 0}, {"asset": "b2-A01", "x": 12, "z": 0.75, "ry": 90, "y": 0, "L": 1.5, "H": 2.6, "W": 0.25, "part": "wall", "tilt": 0}, {"asset": "b2-A01", "x": 4.5, "z": 2.25, "ry": 90, "y": 0, "L": 1.5, "H": 2.6, "W": 0.25, "part": "wall", "tilt": 0}, {"asset": "b2-A01", "x": 12, "z": 2.25, "ry": 90, "y": 0, "L": 1.5, "H": 2.6, "W": 0.25, "part": "wall", "tilt": 0}, {"asset": "b2-A01", "x": 4.5, "z": 3.75, "ry": 90, "y": 0, "L": 1.5, "H": 2.6, "W": 0.25, "part": "wall", "tilt": 0}, {"asset": "b2-A01", "x": 12, "z": 3.75, "ry": 90, "y": 0, "L": 1.5, "H": 2.6, "W": 0.25, "part": "wall", "tilt": 0}, {"asset": "b2-A04", "x": 4.5, "z": 5.25, "ry": 90, "y": 0, "L": 1.5, "H": 2.6, "W": 0.25, "part": "wall", "tilt": 0}, {"asset": "b1-A03", "x": 12, "z": 5.25, "ry": 90, "y": 0, "L": 1.5, "H": 2.4, "W": 0.25, "part": "wall", "tilt": 0}, {"asset": "b1-A04", "x": 12.35, "z": 4.25, "ry": 20, "y": 0, "L": 1.0, "H": 2.1, "W": 0.08, "part": "door", "tilt": 0}, {"asset": "b2-A02", "x": 0.375, "z": 6.125, "ry": 0, "y": 0, "L": 0.75, "H": 2.6, "W": 0.25, "part": "wall", "tilt": 0}, {"asset": "b2-A08", "x": 0.85, "z": 5.55, "ry": -70, "y": 0, "L": 0.8, "H": 2.1, "W": 0.08, "part": "door", "tilt": 0}, {"asset": "b2-A06", "x": 2.25, "z": 6.125, "ry": 0, "y": 0, "L": 1.5, "H": 0.9, "W": 0.25, "part": "low", "tilt": 0}, {"asset": "b2-A07", "x": 3.75, "z": 6.125, "ry": 0, "y": 0, "L": 1.5, "H": 1.8, "W": 0.25, "part": "low", "tilt": 0}, {"asset": "b2-A06", "x": 5.25, "z": 6.125, "ry": 0, "y": 0, "L": 1.5, "H": 0.9, "W": 0.25, "part": "low", "tilt": 0}, {"asset": "b2-A06", "x": 6.75, "z": 6.125, "ry": 0, "y": 0, "L": 1.5, "H": 0.9, "W": 0.25, "part": "low", "tilt": 0}, {"asset": "b2-A06", "x": 8.25, "z": 6.125, "ry": 0, "y": 0, "L": 1.5, "H": 0.9, "W": 0.25, "part": "low", "tilt": 0}, {"asset": "b2-A06", "x": 9.75, "z": 6.125, "ry": 0, "y": 0, "L": 1.5, "H": 0.9, "W": 0.25, "part": "low", "tilt": 0}, {"asset": "b2-A06", "x": 11.25, "z": 6.125, "ry": 0, "y": 0, "L": 1.5, "H": 0.9, "W": 0.25, "part": "low", "tilt": 0}, {"asset": "b2-A06", "x": 12.75, "z": 6.125, "ry": 0, "y": 0, "L": 1.5, "H": 0.9, "W": 0.25, "part": "low", "tilt": 0}, {"asset": "b2-A06", "x": 14.25, "z": 6.125, "ry": 0, "y": 0, "L": 1.5, "H": 0.9, "W": 0.25, "part": "low", "tilt": 0}, {"asset": "b2-A06", "x": 15.75, "z": 6.125, "ry": 0, "y": 0, "L": 1.5, "H": 0.9, "W": 0.25, "part": "low", "tilt": 0}, {"asset": "b2-A09", "x": 11.25, "z": -0.36, "ry": 0, "y": 1.2, "L": 0.8, "H": 0.8, "W": 0.08, "part": "upper", "tilt": 0}, {"asset": "b2-A10", "x": 0, "z": 0, "ry": 0, "y": 0, "L": 0.25, "H": 2.9, "W": 0.25, "part": "post", "tilt": 0}, {"asset": "b2-A10", "x": 0, "z": 6, "ry": 0, "y": 0, "L": 0.25, "H": 2.9, "W": 0.25, "part": "post", "tilt": 0}, {"asset": "b2-A10", "x": 4.5, "z": 0, "ry": 0, "y": 0, "L": 0.25, "H": 2.9, "W": 0.25, "part": "post", "tilt": 0}, {"asset": "b2-A10", "x": 4.5, "z": 6, "ry": 0, "y": 0, "L": 0.25, "H": 2.9, "W": 0.25, "part": "post", "tilt": 0}, {"asset": "b2-A10", "x": 12, "z": 0, "ry": 0, "y": 0, "L": 0.25, "H": 2.9, "W": 0.25, "part": "post", "tilt": 0}, {"asset": "b2-A10", "x": 12, "z": 6, "ry": 0, "y": 0, "L": 0.25, "H": 2.9, "W": 0.25, "part": "post", "tilt": 0}, {"asset": "b2-A10", "x": 16.5, "z": 0, "ry": 0, "y": 0, "L": 0.25, "H": 2.9, "W": 0.25, "part": "post", "tilt": 0}, {"asset": "b2-A10", "x": 16.5, "z": 6, "ry": 0, "y": 0, "L": 0.25, "H": 2.9, "W": 0.25, "part": "post", "tilt": 0}, {"asset": "b2-A10", "x": 1.5, "z": 0, "ry": 0, "y": 0, "L": 0.25, "H": 2.9, "W": 0.25, "part": "post", "tilt": 0}, {"asset": "b2-A10", "x": 3.0, "z": 0, "ry": 0, "y": 0, "L": 0.25, "H": 2.9, "W": 0.25, "part": "post", "tilt": 0}, {"asset": "b2-A10", "x": 6.0, "z": 0, "ry": 0, "y": 0, "L": 0.25, "H": 2.9, "W": 0.25, "part": "post", "tilt": 0}, {"asset": "b2-A10", "x": 7.5, "z": 0, "ry": 0, "y": 0, "L": 0.25, "H": 2.9, "W": 0.25, "part": "post", "tilt": 0}, {"asset": "b2-A10", "x": 9.0, "z": 0, "ry": 0, "y": 0, "L": 0.25, "H": 2.9, "W": 0.25, "part": "post", "tilt": 0}, {"asset": "b2-A10", "x": 10.5, "z": 0, "ry": 0, "y": 0, "L": 0.25, "H": 2.9, "W": 0.25, "part": "post", "tilt": 0}, {"asset": "b2-A10", "x": 13.5, "z": 0, "ry": 0, "y": 0, "L": 0.25, "H": 2.9, "W": 0.25, "part": "post", "tilt": 0}, {"asset": "b2-A10", "x": 15.0, "z": 0, "ry": 0, "y": 0, "L": 0.25, "H": 2.9, "W": 0.25, "part": "post", "tilt": 0}, {"asset": "b2-A12", "x": 8.25, "z": 0, "ry": 0, "y": 2.75, "L": 16.8, "H": 0.3, "W": 0.3, "part": "upper", "tilt": 0}, {"asset": "b2-A11", "x": 0, "z": 3, "ry": 90, "y": 2.8, "L": 6.3, "H": 0.2, "W": 0.2, "part": "upper", "tilt": 0}, {"asset": "b2-A11", "x": 16.5, "z": 3, "ry": 90, "y": 2.8, "L": 6.3, "H": 0.2, "W": 0.2, "part": "upper", "tilt": 0}, {"asset": "b2-A13", "x": 4.5, "z": 3, "ry": 90, "y": 2.9, "L": 6.3, "H": 2.0, "W": 0.25, "part": "upper", "tilt": 0}, {"asset": "b2-A13", "x": 12, "z": 3, "ry": 90, "y": 2.9, "L": 6.3, "H": 2.0, "W": 0.25, "part": "upper", "tilt": 0}, {"asset": "b2-A15", "x": -0.05, "z": 3, "ry": 90, "y": 2.9, "L": 6.3, "H": 2.0, "W": 0.25, "part": "upper", "tilt": 0}, {"asset": "b2-A15", "x": 16.55, "z": 3, "ry": 90, "y": 2.9, "L": 6.3, "H": 2.0, "W": 0.25, "part": "upper", "tilt": 0}, {"asset": "b2-A14", "x": 0.75, "z": 0.55, "ry": 0, "y": 3.25, "L": 1.5, "H": 0.15, "W": 1.5, "part": "upper", "tilt": 33.7}, {"asset": "b2-A14", "x": 2.25, "z": 0.55, "ry": 0, "y": 3.25, "L": 1.5, "H": 0.15, "W": 1.5, "part": "upper", "tilt": 33.7}, {"asset": "b2-A14", "x": 3.75, "z": 0.55, "ry": 0, "y": 3.25, "L": 1.5, "H": 0.15, "W": 1.5, "part": "upper", "tilt": 33.7}, {"asset": "b2-A14", "x": 8.25, "z": 0.55, "ry": 0, "y": 3.25, "L": 1.5, "H": 0.15, "W": 1.5, "part": "upper", "tilt": 33.7}, {"asset": "b2-A14", "x": 9.75, "z": 0.55, "ry": 0, "y": 3.25, "L": 1.5, "H": 0.15, "W": 1.5, "part": "upper", "tilt": 33.7}, {"asset": "b2-A14", "x": 14.25, "z": 0.55, "ry": 0, "y": 3.25, "L": 1.5, "H": 0.15, "W": 1.5, "part": "upper", "tilt": 33.7}], "shell": [{"asset": "b2-A01", "name": "墙段·标准", "size": "1.5×0.25×2.6", "use": "后墙主体，约 7 段"}, {"asset": "b2-A02", "name": "墙段·窄", "size": "0.75×0.25×2.6", "use": "补齐边角"}, {"asset": "b2-A03", "name": "墙段·带窗", "size": "1.5×0.25×2.6", "use": "大厅后墙右端"}, {"asset": "b2-A04", "name": "墙段·带门洞", "size": "1.5×0.25×2.6", "use": "仓储间↔大厅隔墙"}, {"asset": "b2-A05", "name": "转角墙", "size": "1.5×1.5×2.6", "use": "左后角"}, {"asset": "b2-A06", "name": "矮墙·破损", "size": "1.5×0.25×0.9", "use": "前墙（剖切视角的矮墙）"}, {"asset": "b2-A07", "name": "断墙", "size": "1.5×0.25×1.8", "use": "仓储间前角，做破败感"}, {"asset": "b2-A08", "name": "木门", "size": "1.0×0.1×2.1", "use": "前门，仓储间"}, {"asset": "b2-A09", "name": "窗板", "size": "0.8×0.08×0.8", "use": "大厅窗户"}, {"asset": "b2-A10", "name": "立柱", "size": "0.25×0.25×2.8", "use": "每个墙段接缝处，遮住拼缝"}, {"asset": "b2-A11", "name": "横梁·细", "size": "6.3×0.2×0.2", "use": "房间前后方向的拉梁"}, {"asset": "b2-A12", "name": "横梁·粗", "size": "16.5×0.3×0.3", "use": "后墙顶梁（可分段）"}, {"asset": "b2-A13", "name": "屋架", "size": "6.3×0.25×2.0", "use": "每道隔墙上方一榀"}, {"asset": "b2-A14", "name": "屋顶瓦片", "size": "1.5×1.5×0.15", "use": "只铺后坡一部分，保持剖切"}, {"asset": "b2-A15", "name": "山墙", "size": "6.3×0.25×2.0", "use": "左右两端"}, {"asset": "b2-A16", "name": "地砖·土石", "size": "1.5×1.5×0.1", "use": "仓储间、大厅地面"}, {"asset": "b1-A01", "name": "石墙段", "size": "1.5×0.25×2.6", "use": "卧室右墙"}, {"asset": "b1-A02", "name": "墙段·带窗", "size": "1.5×0.25×2.6", "use": "卧室后墙，两床之间"}, {"asset": "b1-A03", "name": "门框", "size": "1.2×0.25×2.3", "use": "大厅↔卧室隔墙门洞"}, {"asset": "b1-A04", "name": "木门·精细", "size": "1.0×0.1×2.1", "use": "装在卧室门框里"}, {"asset": "b1-A05", "name": "地砖·石板", "size": "1.5×1.5×0.1", "use": "卧室地面"}], "faces": {"big": "1.5–2万", "mid": "5千–8千", "small": "1.5千–3千", "shell": "5千–1万"}};
+const $ = s => document.querySelector(s);
+const ROOMNAME = {S:'仓储间', H:'大厅', B:'卧室', OUT:'屋外'};
+const LAYNAME = {floor:'地面', wall:'墙面', stack:'叠放'};
+const WALLNAME = {back:'后墙', front:'前墙', left:'左墙', right:'右墙', p1:'仓储↔大厅隔墙', p2:'大厅↔卧室隔墙'};
+const ROUND = new Set(['b2-S04','b1-P01','b2-T11','b2-P01','b2-F03','b1-F08','b2-S05','b1-P05','b1-P14','b2-S08','b2-P05','b1-P07','b2-P03']);
+const byAsset = Object.fromEntries(D.items.map(i => [i.asset, i]));
+
+/* stats */
+const cnt = (k,v) => D.items.filter(i => i[k] === v).length;
+$('#stats').innerHTML = [
+  `<span><b>${D.items.length}</b>张贴纸</span>`, `<span><b>${D.shell.length}</b>件房屋构件</span>`,
+  `<span><b>${cnt('layer','floor')}</b>地面</span>`, `<span><b>${cnt('layer','wall')}</b>墙面</span>`, `<span><b>${cnt('layer','stack')}</b>叠放</span>`,
+  ...['S','H','B'].map(r => `<span>${ROOMNAME[r]} <b>${cnt('room',r)}</b></span>`)
+].join('');
+
+/* plan */
+const NS = 'http://www.w3.org/2000/svg', U = 100; // 1 m = 100 svg units
+const svg = $('#plan'), W = D.house.w*U, Dp = D.house.d*U;
+const VB = {x:-60, y:-190, w:W+120, h:Dp+190+175};
+svg.setAttribute('viewBox', `${VB.x} ${VB.y} ${VB.w} ${VB.h}`);
+const el = (tag, attrs, parent=svg, text) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (text != null) e.textContent = text; parent.appendChild(e); return e; };
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const tierVar = t => `var(--${t})`;
+
+// rooms + grid
+for (const r of D.rooms) {
+  el('rect', {x:r.x0*U, y:0, width:(r.x1-r.x0)*U, height:Dp, fill:'var(--room)'});
+  el('text', {x:(r.x0+r.x1)/2*U, y:Dp/2+40, 'text-anchor':'middle', 'font-size':120, fill:'var(--line)', style:'font-family:var(--f-display)'}, svg, r.name);
+}
+const g = el('g', {stroke:'var(--line)', 'stroke-width':1.5});
+for (let x = 0; x <= W+1; x += D.grid*U) el('line', {x1:x, y1:0, x2:x, y2:Dp+120}, g);
+for (let z = 0; z <= Dp+121; z += D.grid*U) el('line', {x1:0, y1:z, x2:W, y2:z}, g);
+el('text', {x:W-4, y:Dp+150, 'text-anchor':'end', 'font-size':22, fill:'var(--muted)'}, svg, '屋外：纯深色（森林背景以后再加）');
+el('text', {x:0, y:-160, 'font-size':22, fill:'var(--muted)'}, svg, '后墙（高墙，挂在墙上的贴纸画在这一排）');
+// scale bar
+el('line', {x1:0, y1:Dp+150, x2:150, y2:Dp+150, stroke:'var(--ink)', 'stroke-width':4});
+el('text', {x:160, y:Dp+158, 'font-size':22, fill:'var(--ink)'}, svg, '1 格 = 5 尺 = 1.5 m');
+
+// walls with gaps
+function wallSeg(x1,y1,x2,y2,w,dash){ el('line', {x1,y1,x2,y2, stroke:'var(--wall)', 'stroke-width':w, 'stroke-linecap':'square', ...(dash ? {'stroke-dasharray':'26 14'} : {})}); }
+function gapsOf(wall){ return D.doors.filter(d => d.wall === wall).concat(D.windows.filter(d => d.wall === wall).map(d => ({...d, win:true}))); }
+function drawWall(wall, fixed, from, to, horiz, w, dash){
+  let cur = from; const gs = gapsOf(wall).filter(d => !d.win).sort((a,b) => a.a-b.a);
+  for (const d of gs) { seg(cur, d.a); cur = d.b; doorMark(d); }
+  seg(cur, to);
+  for (const d of gapsOf(wall).filter(d => d.win)) winMark(d);
+  function seg(a,b){ if (b - a < .01) return; horiz ? wallSeg(a*U, fixed*U, b*U, fixed*U, w, dash) : wallSeg(fixed*U, a*U, fixed*U, b*U, w, dash); }
+  function doorMark(d){
+    const r = (d.b-d.a)*U;
+    if (horiz) { el('path', {d:`M${d.a*U} ${fixed*U} A ${r} ${r} 0 0 0 ${d.b*U} ${fixed*U-r}`, fill:'none', stroke:'var(--muted)', 'stroke-width':2, 'stroke-dasharray':'6 6'}); }
+    else { el('path', {d:`M${fixed*U} ${d.a*U} A ${r} ${r} 0 0 1 ${fixed*U+r} ${d.b*U}`, fill:'none', stroke:'var(--muted)', 'stroke-width':2, 'stroke-dasharray':'6 6'}); }
+    el('text', horiz ? {x:(d.a+d.b)/2*U, y:fixed*U+44, 'text-anchor':'middle', 'font-size':20, fill:'var(--muted)'} : {x:fixed*U+10, y:(d.a+d.b)/2*U-60, 'font-size':20, fill:'var(--muted)'}, svg, d.label);
+  }
+  function winMark(d){ el('rect', {x:d.a*U, y:fixed*U-9, width:(d.b-d.a)*U, height:18, fill:'var(--sheet)', stroke:'var(--wall)', 'stroke-width':3}); }
+}
+drawWall('back', 0, -0.12, D.house.w+.12, true, 24);
+drawWall('front', D.house.d, -0.12, D.house.w+.12, true, 12, true);
+drawWall('left', 0, 0, D.house.d, false, 24);
+drawWall('right', D.house.w, 0, D.house.d, false, 24);
+D.partitions.forEach((x,i) => drawWall(i ? 'p2' : 'p1', x, 0, D.house.d, false, 16));
+el('text', {x:W/2, y:Dp+40, 'text-anchor':'middle', 'font-size':20, fill:'var(--muted)'}, svg, '前墙（矮墙，剖切看进屋里）');
+
+// items
+const nodes = {};
+function badge(parent, x, y, r, it){
+  el('circle', {cx:x, cy:y, r, fill:'var(--sheet)', stroke:tierVar(it.tier), 'stroke-width':3, class:'dot'}, parent);
+  el('text', {x, y:y+r*.36, 'text-anchor':'middle', 'font-size':r*1.05, 'font-weight':600, fill:'var(--ink)', style:'font-family:var(--f-mono)'}, parent, it.n);
+}
+const layerG = {floor:el('g',{}), wall:el('g',{}), stack:el('g',{})};
+// stacked items hang off their root (the floor or wall item at the bottom of the pile)
+const rootOf = a => { let p = byAsset[a]; while (p.layer === 'stack') p = byAsset[p.on]; return p; };
+const kids = {};
+for (const it of D.items.filter(i => i.layer === 'stack')) { const r = rootOf(it.asset); (kids[r.asset] = kids[r.asset] || []).push(it); }
+const STEP = 29, KR = 12.5;
+for (const it of D.items.filter(i => i.layer === 'floor')) {
+  const gI = el('g', {class:'it', tabindex:0, 'data-n':it.n}, layerG.floor);
+  const w = it.fw*U, d = it.fd*U, x = it.x*U - w/2, y = it.z*U - d/2;
+  const flat = it.H < .1, has = kids[it.asset];
+  el('rect', {x, y, width:w, height:d, rx:ROUND.has(it.asset) ? Math.min(w,d)/2 : 6, class:'fp',
+    fill:`color-mix(in srgb, ${tierVar(it.tier)} ${flat ? 10 : 24}%, var(--sheet))`, stroke:tierVar(it.tier), ...(flat ? {'stroke-dasharray':'10 8'} : {})}, gI);
+  if (has) {
+    // parent badge at the start edge, its pile flows along the long side
+    const horiz = w >= d, bx = horiz ? x + 22 : it.x*U, by = horiz ? it.z*U : y + 22;
+    badge(gI, bx, by, 17, it);
+    has.forEach((k, i) => {
+      const per = Math.max(1, Math.floor(((horiz ? w : d) - 50) / STEP));
+      const row = Math.floor(i / per), col = i % per;
+      const cx = horiz ? bx + 32 + col*STEP : it.x*U + (row ? (row % 2 ? 1 : -1) * STEP*Math.ceil(row/2) : 0);
+      const cy = horiz ? it.z*U + (row ? (row % 2 ? 1 : -1) * STEP*Math.ceil(row/2) * .9 : 0) : by + 32 + col*STEP;
+      const gK = el('g', {class:'it', tabindex:0, 'data-n':k.n}, layerG.stack); badge(gK, cx, cy, KR, k); nodes[k.n] = gK;
+    });
+  } else {
+    const showName = w >= 95 && d >= 55;
+    badge(gI, it.x*U, it.z*U - (showName ? 12 : 0), 17, it);
+    if (showName) el('text', {x:it.x*U, y:it.z*U+30, 'text-anchor':'middle', 'font-size':18, fill:'var(--ink)'}, gI, it.name);
+  }
+  nodes[it.n] = gI;
+}
+// wall items: tags above the back wall, or just inside the room next to a partition
+for (const it of D.items.filter(i => i.layer === 'wall')) {
+  const gI = el('g', {class:'it', tabindex:0, 'data-n':it.n}, layerG.wall);
+  let x, y, tx, ty;
+  if (it.wall === 'back') { x = it.along*U; y = 0; tx = x; ty = -70 - ((it.along*10|0)%2)*48; }
+  else { const px = D.partitions[it.wall === 'p1' ? 0 : 1]*U; x = px; y = it.along*U; tx = px - 56; ty = y; }
+  el('line', {x1:x, y1:y, x2:tx, y2:ty, stroke:tierVar(it.tier), 'stroke-width':2}, gI);
+  el('rect', {x:tx-48, y:ty-20, width:96, height:40, rx:6, class:'fp', fill:'var(--sheet)', stroke:tierVar(it.tier)}, gI);
+  el('text', {x:tx-30, y:ty+7, 'font-size':17, 'font-weight':600, fill:'var(--ink)', style:'font-family:var(--f-mono)', 'text-anchor':'middle'}, gI, it.n);
+  el('text', {x:tx+12, y:ty+7, 'font-size':15, fill:'var(--ink)', 'text-anchor':'middle'}, gI, it.name.slice(0,4));
+  (kids[it.asset] || []).forEach((k, i) => { const gK = el('g', {class:'it', tabindex:0, 'data-n':k.n}, layerG.stack); badge(gK, tx + 64 + i*STEP, ty, KR, k); nodes[k.n] = gK; });
+  nodes[it.n] = gI;
+}
+
+/* table */
+const rowsEl = $('#rows'), rowNodes = {};
+const fmt = v => (Math.round(v*100)/100).toString();
+function where(it){
+  if (it.layer === 'floor') return `地面 · 格 (${fmt(it.x/D.grid)}, ${fmt(it.z/D.grid)})${it.rot ? ` · 转 ${it.rot}°` : ''}`;
+  if (it.layer === 'wall') return `${WALLNAME[it.wall]} · 离地 ${it.y} m`;
+  const p = byAsset[it.on]; return `叠放在 #${p.n} ${p.name} · ${it.note}`;
+}
+for (const r of ['S','H','B']) {
+  const room = D.rooms.find(x => x.id === r);
+  const tr = document.createElement('tr'); tr.className = 'room';
+  tr.innerHTML = `<td colspan="6">${ROOMNAME[r]}<small>${room ? room.story : '门外的几件小东西'} · ${cnt('room', r)} 件</small></td>`; rowsEl.appendChild(tr);
+  for (const it of D.items.filter(i => i.room === r)) {
+    const t = document.createElement('tr'); t.className = 'row'; t.tabIndex = 0; t.dataset.n = it.n;
+    t.innerHTML = `<td class="n">${it.n}</td><td>${it.name}</td><td class="a">${it.asset}</td><td><span class="tier t-${it.tier}">${{big:'大',mid:'中',small:'小'}[it.tier]}</span> <span class="lay">${LAYNAME[it.layer]}</span></td><td class="s">${fmt(it.L)}×${fmt(it.W)}×${fmt(it.H)}</td><td>${where(it)}</td>`;
+    rowsEl.appendChild(t); rowNodes[it.n] = t;
+  }
+}
+$('#faces').innerHTML = [['big','大件'],['mid','中件'],['small','小摆件'],['shell','房屋构件']].map(([k,l]) =>
+  `<tr><td>${k === 'shell' ? l : `<span class="tier t-${k}">${l}</span>`}</td><td class="s">${D.faces[k]}</td><td class="s">${k === 'shell' ? D.shell.length : cnt('tier', k)}</td></tr>`).join('');
+$('#shell').innerHTML = D.shell.map(s => `<tr><td class="a">${s.asset}</td><td>${s.name}</td><td class="s">${s.size}</td><td>${s.use}</td></tr>`).join('');
+
+/* linking */
+let sel = null;
+function select(n, scroll){
+  if (sel != null) { nodes[sel]?.classList.remove('on'); rowNodes[sel]?.classList.remove('on'); }
+  sel = sel === n ? null : n;
+  if (sel == null) return;
+  nodes[sel]?.classList.add('on'); rowNodes[sel]?.classList.add('on');
+  if (scroll === 'row') rowNodes[sel]?.scrollIntoView({block:'nearest', behavior:'smooth'});
+  if (scroll === 'plan') svg.scrollIntoView({block:'nearest', behavior:'smooth'});
+}
+for (const n in nodes) { const g = nodes[n];
+  g.addEventListener('click', () => select(+n, 'row'));
+  g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(+n, 'row'); } }); }
+for (const n in rowNodes) { const t = rowNodes[n];
+  t.addEventListener('click', () => select(+n, 'plan'));
+  t.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(+n, 'plan'); } }); }
+document.querySelectorAll('.chip').forEach(c => c.addEventListener('click', () => {
+  document.querySelectorAll('.chip').forEach(o => o.setAttribute('aria-pressed', o === c));
+  const L = c.dataset.layer;
+  for (const it of D.items) nodes[it.n]?.classList.toggle('dim', L !== 'all' && it.layer !== L);
+}));
+
+/* data */
+const ta = $('#json'); ta.value = JSON.stringify(D);
+$('#copy').addEventListener('click', () => {
+  const done = m => $('#copied').textContent = m;
+  try { navigator.clipboard.writeText(ta.value).then(() => done('已复制'), () => { ta.hidden = false; ta.select(); done('请手动复制下面的文本'); }); }
+  catch (e) { ta.hidden = false; ta.select(); done('请手动复制下面的文本'); }
+});
+</script>
